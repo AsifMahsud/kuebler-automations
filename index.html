@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuebler Automation Flowchart</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #252932;
+    --n8n: #e8612a;
+    --zapier: #f8a947;
+    --google: #4285f4;
+    --facebook: #1877f2;
+    --manual: #34c97a;
+    --ai: #a855f7;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --dim: #8896a8;
+    --arrow: #3a4252;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    padding: 40px 32px 80px;
+  }
+
+  header {
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  header p { font-size: 13px; color: var(--muted); margin-top: 4px; font-family: 'IBM Plex Mono', monospace; }
+
+  .legend {
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px; font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace; color: var(--dim);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* ── Sections ── */
+  .sections { display: flex; flex-direction: column; gap: 40px; }
+
+  .section-row {
+    display: grid;
+    gap: 20px;
+    align-items: start;
+  }
+  .section-row.single { grid-template-columns: 1fr; }
+  .section-row.two    { grid-template-columns: 1fr 1fr; }
+  .section-row.three  { grid-template-columns: 1fr 1fr 1fr; }
+
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .section-body { padding: 16px; }
+
+  /* ── Flow nodes ── */
+  .flow { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+
+  .node {
+    position: relative;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 1.5;
+    border: 1px solid transparent;
+    width: 100%;
+  }
+  .node .node-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+    display: block;
+  }
+  .node .node-desc {
+    color: var(--dim);
+    font-size: 11.5px;
+  }
+  .node.n8n    { background: rgba(232,97,42,0.08);  border-color: rgba(232,97,42,0.25); }
+  .node.zapier { background: rgba(248,169,71,0.08);  border-color: rgba(248,169,71,0.25); }
+  .node.google { background: rgba(66,133,244,0.08);  border-color: rgba(66,133,244,0.25); }
+  .node.facebook { background: rgba(24,119,242,0.08); border-color: rgba(24,119,242,0.25); }
+  .node.manual { background: rgba(52,201,122,0.08);  border-color: rgba(52,201,122,0.25); }
+  .node.ai     { background: rgba(168,85,247,0.08);  border-color: rgba(168,85,247,0.25); }
+  .node.trigger { background: var(--surface2); border-color: var(--border); }
+  .node.sheet  { background: rgba(52,201,122,0.05);  border-color: rgba(52,201,122,0.15); }
+
+  .node.n8n    .node-label { color: var(--n8n); }
+  .node.zapier .node-label { color: var(--zapier); }
+  .node.google .node-label { color: var(--google); }
+  .node.facebook .node-label { color: var(--facebook); }
+  .node.manual .node-label { color: var(--manual); }
+  .node.ai .node-label     { color: var(--ai); }
+  .node.trigger .node-label { color: var(--dim); }
+  .node.sheet .node-label  { color: var(--manual); }
+
+  /* Arrow between nodes */
+  .arrow {
+    width: 2px;
+    height: 18px;
+    background: var(--border);
+    margin-left: 18px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .arrow::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: -4px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid var(--border);
+  }
+  .arrow.label-arrow {
+    height: 14px;
+  }
+  .arrow-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 2px;
+    margin-bottom: -2px;
+  }
+  .arrow-label span {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 8px;
+    white-space: nowrap;
+  }
+  .arrow-label .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Branch layout */
+  .branches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    margin-top: 0;
+  }
+  .branch {
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .branch-label {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Campaign boxes */
+  .campaign-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 0;
+    width: 100%;
+  }
+  .campaign-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  .campaign-box .cb-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .campaign-box .cb-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--facebook);
+    word-break: break-all;
+  }
+
+  /* Tags */
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .tag {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+  .tag.social { background: rgba(99,179,237,0.12); color: #63b3ed; border: 1px solid rgba(99,179,237,0.2); }
+  .tag.sheet-tag { background: rgba(52,201,122,0.1); color: var(--manual); border: 1px solid rgba(52,201,122,0.2); }
+  .tag.fb-tag { background: rgba(24,119,242,0.1); color: var(--facebook); border: 1px solid rgba(24,119,242,0.2); }
+  .tag.warn { background: rgba(248,169,71,0.1); color: var(--zapier); border: 1px solid rgba(248,169,71,0.2); }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 0;
+  }
+
+  .section-connector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
+    color: var(--muted);
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-top: -20px;
+    margin-bottom: -20px;
+    z-index: 1;
+    position: relative;
+  }
+  .section-connector .line { flex:1; height:1px; background: var(--border); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Kuebler Automation System</h1>
+    <p>automation-flowchart · 7 workflows</p>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="dot" style="background:var(--n8n)"></div>N8N</div>
+    <div class="legend-item"><div class="dot" style="background:var(--zapier)"></div>Zapier</div>
+    <div class="legend-item"><div class="dot" style="background:var(--google)"></div>Google</div>
+    <div class="legend-item"><div class="dot" style="background:var(--facebook)"></div>Facebook</div>
+    <div class="legend-item"><div class="dot" style="background:var(--manual)"></div>Manual / Sheet</div>
+    <div class="legend-item"><div class="dot" style="background:var(--ai)"></div>AI</div>
+  </div>
+</header>
+
+<div class="sections">
+
+  <!-- 1. AI Description -->
+  <div class="section-row single">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <span class="section-title">Product AI Description Generation</span>
+      </div>
+      <div class="section-body">
+        <div class="flow">
+          <div class="node ai">
+            <span class="node-label">ZAPIER WORKFLOW</span>
+            <span class="node-desc">Automated AI-generated product descriptions — <code style="color:var(--ai);font-size:10px">zap.webdrvn.com/workflow/Q6eLa28ZGLRp8GW2</code></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Kuebler Post Automation -->
+  <div class="section-row single">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <span class="section-title">Kuebler Post Automation</span>
+      </div>
+      <div class="section-body">
+        <div class="flow">
+
+          <!-- Trigger -->
+          <div class="node trigger">
+            <span class="node-label">TRIGGER</span>
+            <span class="node-desc">New Product <em>or</em> New Banner published on WordPress</span>
+          </div>
+          <div class="arrow"></div>
+
+          <!-- Two branches -->
+          <div class="branches">
+
+            <!-- Product Branch -->
+            <div class="branch">
+              <div class="branch-label">🛒 If New Product</div>
+
+              <div class="node n8n">
+                <span class="node-label">N8N · FLOW 1</span>
+                <span class="node-desc">Prepare Shotstack video &amp; image posts. Handle Redding &amp; Oregon accounts. Create assets based on product attributes.</span>
+              </div>
+              <div class="arrow"></div>
+
+              <div class="node zapier">
+                <span class="node-label">ZAPIER · FLOW 1</span>
+                <span class="node-desc">Post video to YouTube. Post image to Instagram, Pinterest, GMB. Triggers N8N Flow 2.</span>
+                <div class="tags">
+                  <span class="tag social">YouTube</span>
+                  <span class="tag social">Instagram</span>
+                  <span class="tag social">Pinterest</span>
+                  <span class="tag social">GMB</span>
+                </div>
+              </div>
+              <div class="arrow"></div>
+
+              <div class="node n8n">
+                <span class="node-label">N8N · FLOW 2</span>
+                <span class="node-desc">Publish post on Twitter &amp; Facebook.</span>
+                <div class="tags">
+                  <span class="tag social">Twitter/X</span>
+                  <span class="tag fb-tag">Facebook</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Banner Branch -->
+            <div class="branch">
+              <div class="branch-label">🖼 If New Banner</div>
+
+              <div class="node n8n">
+                <span class="node-label">N8N · FLOW 1</span>
+                <span class="node-desc">Prepare Shotstack video &amp; image posts. Generate YouTube ad title, description, and headlines.</span>
+              </div>
+              <div class="arrow"></div>
+
+              <div class="node zapier">
+                <span class="node-label">ZAPIER · FLOW 1</span>
+                <span class="node-desc">Post video to YouTube, image to Instagram, Pinterest, GMB. Add ad title &amp; headlines to sheet. Triggers N8N Flow 2.</span>
+                <div class="tags">
+                  <span class="tag social">YouTube</span>
+                  <span class="tag social">Instagram</span>
+                  <span class="tag social">Pinterest</span>
+                  <span class="tag social">GMB</span>
+                  <span class="tag sheet-tag">sheet#banner-ads</span>
+                </div>
+              </div>
+              <div class="arrow"></div>
+
+              <div class="node n8n">
+                <span class="node-label">N8N · FLOW 2</span>
+                <span class="node-desc">Publish post on Twitter &amp; Facebook.</span>
+                <div class="tags">
+                  <span class="tag social">Twitter/X</span>
+                  <span class="tag fb-tag">Facebook</span>
+                </div>
+              </div>
+              <div class="arrow"></div>
+
+              <div class="node facebook">
+                <span class="node-label">N8N · FLOW 1 → FACEBOOK AD CREATION</span>
+                <span class="node-desc">Campaign: <strong>"Banner Campaign – [first 2 chars of description]"</strong><br>
+                2 Adsets: Redding &amp; Oregon · $50 budget each · 15 days duration</span>
+                <div class="tags">
+                  <span class="tag fb-tag">Campaign</span>
+                  <span class="tag fb-tag">Redding Adset</span>
+                  <span class="tag fb-tag">Oregon Adset</span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /branches -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 & 4 side by side -->
+  <div class="section-row two">
+
+    <!-- 3. Facebook Carousel Ads -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <span class="section-title">Facebook Carousel Ads</span>
+      </div>
+      <div class="section-body">
+        <div class="flow">
+          <div class="node sheet">
+            <span class="node-label">SOURCE · GOOGLE SHEET</span>
+            <span class="node-desc"><em>BEWARE (AUTOMATED) Carousel Ads</em> sheet — contains carousel ad IDs</span>
+          </div>
+          <div class="arrow"></div>
+          <div class="node n8n">
+            <span class="node-label">N8N · FLOW 3</span>
+            <span class="node-desc">Read carousel ad IDs from sheet. Find 10 most recent products in matching carousel categories.</span>
+          </div>
+          <div class="arrow"></div>
+          <div class="node facebook">
+            <span class="node-label">FACEBOOK · UPDATE ADS</span>
+            <span class="node-desc">Update corresponding Facebook carousel ads with the fresh product data.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Facebook Ad Automations -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <span class="section-title">Facebook Ad Automations (Redding &amp; Oregon)</span>
+      </div>
+      <div class="section-body">
+        <div class="flow">
+          <div class="node n8n">
+            <span class="node-label">N8N · FLOW 4 — STEP 1</span>
+            <span class="node-desc">Pause the previous active adset in the configured campaign.</span>
+          </div>
+          <div class="arrow"></div>
+          <div class="node n8n">
+            <span class="node-label">N8N · FLOW 4 — STEP 2</span>
+            <span class="node-desc">Find the most recent 100 Facebook page posts, <em>excluding</em> any banner posts.</span>
+          </div>
+          <div class="arrow"></div>
+          <div class="node facebook">
+            <span class="node-label">FACEBOOK · NEW ADSET</span>
+            <span class="node-desc">Create a new adset using the 100 most recent posts. Applied to both campaigns:</span>
+          </div>
+          <div class="arrow"></div>
+          <div class="campaign-row">
+            <div class="campaign-box">
+              <div class="cb-label">OREGON CAMPAIGN</div>
+              <div class="cb-id">120210764986200458</div>
+            </div>
+            <div class="campaign-box">
+              <div class="cb-label">REDDING CAMPAIGN</div>
+              <div class="cb-id">120210707357660458</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 5. Google Ads Products -->
+  <div class="section-row single">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <span class="section-title">Google Ads Automation — Products</span>
+      </div>
+      <div class="section-body">
+        <div class="flow">
+          <div class="node n8n">
+            <span class="node-label">N8N · FLOW 5</span>
+            <span class="node-desc">Add new YouTube video data to <code style="color:var(--manual);font-size:10px">sheet#videos-data</code> — including titles, headlines, and short headlines required for Google Ads.</span>
+            <div class="tags"><span class="tag sheet-tag">sheet#videos-data</span></div>
+          </div>
+          <div class="arrow"></div>
+          <div class="node n8n">
+            <span class="node-label">N8N · FLOW 6</span>
+            <span class="node-desc">Review sheet to validate headlines and attributes against Google Ads character/policy standards. Link data back to matching products on the WordPress website.</span>
+            <div class="tags"><span class="tag google">Google Ads Validation</span><span class="tag social">WordPress Sync</span></div>
+          </div>
+          <div class="arrow"></div>
+          <div class="node manual">
+            <span class="node-label">MANUAL — 1ST OF EVERY MONTH</span>
+            <span class="node-desc">
+              Download CSV from WordPress <strong>API endpoint</strong>. Upload to <strong>Google Ads Editor</strong> to create 600 new ads for the month.<br><br>
+              Campaign naming: <code style="color:var(--manual);font-size:10px">[Month] [Year] | Video Campaign</code><br>
+              Daily budget: <strong>$20/day</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 & 7 side by side -->
+  <div class="section-row two">
+
+    <!-- 6. Google Ads Banner -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <span class="section-title">Google Ads Automation — Banner</span>
+      </div>
+      <div class="section-body">
+        <div class="flow">
+          <div class="node sheet">
+            <span class="node-label">SOURCE · GOOGLE SHEET</span>
+            <span class="node-desc"><code style="color:var(--manual);font-size:10px">sheet#banner-ads</code> — script checks for rows where <strong>boosted = FALSE</strong></span>
+          </div>
+          <div class="arrow"></div>
+          <div class="node google">
+            <span class="node-label">GOOGLE ADS SCRIPT</span>
+            <span class="node-desc">Pause any currently active ad in campaign <code style="color:var(--google);font-size:10px">"Video | Banner | ongoing"</code>. Create and activate a new ad for the unboosted banner.</span>
+            <div class="tags">
+              <span class="tag google">Video | Banner | ongoing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Repost Automations -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">07</span>
+        <span class="section-title">Repost Automations</span>
+      </div>
+      <div class="section-body">
+        <div class="flow">
+          <div class="node n8n">
+            <span class="node-label">N8N · FLOW 7 — TRIGGER</span>
+            <span class="node-desc">Identify <strong>4 high-value, under-promoted products</strong> for re-posting across social media channels.</span>
+          </div>
+          <div class="arrow"></div>
+          <div class="node n8n">
+            <span class="node-label">N8N · FLOW 1 LOGIC (REUSED)</span>
+            <span class="node-desc">Apply the same Shotstack video/image creation logic used in the New Product flow.</span>
+          </div>
+          <div class="arrow"></div>
+          <div class="node zapier">
+            <span class="node-label">ZAPIER · FLOW 1 (REUSED)</span>
+            <span class="node-desc">Post video to YouTube, image to Instagram, Pinterest, GMB. Trigger N8N Flow 2 for Twitter &amp; Facebook.</span>
+            <div class="tags">
+              <span class="tag social">YouTube</span>
+              <span class="tag social">Instagram</span>
+              <span class="tag social">Pinterest</span>
+              <span class="tag social">GMB</span>
+            </div>
+          </div>
+          <div class="arrow"></div>
+          <div class="node n8n">
+            <span class="node-label">N8N · FLOW 2 (REUSED)</span>
+            <span class="node-desc">Publish re-post on Twitter &amp; Facebook.</span>
+            <div class="tags">
+              <span class="tag social">Twitter/X</span>
+              <span class="tag fb-tag">Facebook</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /sections -->
+
+</body>
+</html>
