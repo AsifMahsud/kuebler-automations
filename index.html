@@ -73,6 +73,72 @@
   .section-row.two    { grid-template-columns: 1fr 1fr; }
   .section-row.three  { grid-template-columns: 1fr 1fr 1fr; }
 
+  /* ── Responsive breakpoints ── */
+  @media (max-width: 900px) {
+    .section-row.two,
+    .section-row.three {
+      grid-template-columns: 1fr;
+    }
+    .branches {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 20px 14px 60px;
+    }
+    header {
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+      flex-direction: column;
+      gap: 14px;
+    }
+    header h1 {
+      font-size: 17px;
+    }
+    .legend {
+      gap: 10px;
+    }
+    .legend-item {
+      font-size: 10px;
+    }
+    .sections {
+      gap: 24px;
+    }
+    .section-row {
+      gap: 14px;
+    }
+    .section-header {
+      padding: 10px 12px;
+    }
+    .section-title {
+      font-size: 12px;
+    }
+    .section-body {
+      padding: 12px;
+    }
+    .node {
+      padding: 9px 11px;
+    }
+    .node .node-label {
+      font-size: 9px;
+    }
+    .node .node-desc {
+      font-size: 11px;
+    }
+    .campaign-row {
+      grid-template-columns: 1fr !important;
+    }
+    .tags {
+      gap: 3px;
+    }
+    .tag {
+      font-size: 9px;
+      padding: 1px 5px;
+    }
+  }
+
   .section {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -225,6 +291,11 @@
     margin-top: 0;
     width: 100%;
   }
+  @media (max-width: 480px) {
+    .campaign-row {
+      grid-template-columns: 1fr;
+    }
+  }
   .campaign-box {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -311,7 +382,7 @@
         <div class="flow">
           <div class="node ai">
             <span class="node-label">ZAPIER WORKFLOW</span>
-            <span class="node-desc">Automated AI-generated product descriptions — <code style="color:var(--ai);font-size:10px">/workflow/Q6eLa28ZGLRp8GW2</code></span>
+            <span class="node-desc">Automated AI-generated product descriptions — <code style="color:var(--ai);font-size:10px">workflow/Q6eLa28ZGLRp8GW2</code></span>
           </div>
         </div>
       </div>
